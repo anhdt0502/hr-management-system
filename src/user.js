@@ -1,14 +1,13 @@
-export class User {
-  constructor(id, name, role) {
+class User {
+  constructor(id, name, phone, address, bank, joinDate, avatar) {
     this.id = id;
     this.name = name;
-    this.role = role; // admin | staff
+    this.phone = phone;
+    this.address = address;
+    this.bank = bank;
+    this.joinDate = joinDate;
+    this.avatar = avatar;
   }
 
-  updateName(newName) {
-    this.name = newName;
-  }
 }
-
-// export ra global để file khác dùng
 window.User = User;

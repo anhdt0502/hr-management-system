@@ -1,59 +1,70 @@
 class System {
   constructor() {
     this.users = [];
-    this.tasks = [];
-    this.kpis = [];
   }
 
-  // ===== USER =====
-  addUser(user) {
+  load() {
+    const data = JSON.parse(localStorage.getItem("users"));
+
+    if (!data) {
+      this.users = [...DEFAULT_USERS];
+      this.save();
+      return;
+    }
+
+    this.users = data.map(u => new User(
+      u.id,
+      u.name,
+      u.phone,
+      u.address,
+      u.bank,
+      u.joinDate,
+      u.avatar
+    ));
+  }
+
+  save() {
+    localStorage.setItem("users", JSON.stringify(this.users));
+  }
+
+  add(user) {
     this.users.push(user);
+    this.save();
   }
 
-  getUserById(id) {
+  updateUser(id, data) {
+    const u = this.users.find(u => u.id === id);
+    if (!u) return;
+
+    u.name = data.name;
+    u.phone = data.phone;
+    u.address = data.address;
+    u.bank = data.bank;
+    u.joinDate = data.joinDate;
+    u.avatar = data.avatar;
+    this.save();
+  }
+
+  delete(id) {
+    this.users = this.users.filter(u => u.id !== id);
+    this.save();
+  }
+
+  getAll() {
+    return this.users;
+  }
+
+  getById(id) {
     return this.users.find(u => u.id === id);
   }
+  search(keyword) {
+    keyword = keyword.toLowerCase();
 
-  deleteUser(id) {
-    this.users = this.users.filter(u => u.id !== id);
-  }
-
-  // ===== TASK =====
-  assignTask(task) {
-    this.tasks.push(task);
-  }
-
-  getTasksByUser(userId) {
-    return this.tasks.filter(t => t.assignedTo === userId);
-  }
-
-  updateTaskStatus(taskId, status) {
-    const task = this.tasks.find(t => t.id === taskId);
-    if (task) task.updateStatus(status);
-  }
-
-  // ===== KPI =====
-  addKPI(kpi) {
-    this.kpis.push(kpi);
-  }
-
-  updateKPI(userId, value) {
-    const kpi = this.kpis.find(k => k.userId === userId);
-    if (kpi) kpi.updateAchieved(value);
-  }
-
-  // ===== REPORT =====
-  getReport() {
-    return this.users.map(user => {
-      const tasks = this.getTasksByUser(user.id);
-      const kpi = this.kpis.find(k => k.userId === user.id);
-
-      return {
-        name: user.name,
-        totalTasks: tasks.length,
-        kpi: kpi ? `${kpi.achieved}/${kpi.target}` : 'N/A'
-      };
-    });
+    return this.users.filter(u =>
+      u.name.toLowerCase().includes(keyword) ||
+      u.phone.includes(keyword) ||
+      u.address.toLowerCase().includes(keyword)
+    );
   }
 }
 

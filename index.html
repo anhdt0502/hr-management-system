@@ -3,21 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <title>HR Management System</title>
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
-<h1>HR Management System</h1>
+<div class="container">
+  <img src="/img/logo.jpg" id="logo">
 
-<!--<button onclick="runSystem()">Start</button>-->
+  <audio id="bgMusic" loop>
+    <source src="music/music.mp3" type="audio/mpeg">
+  </audio>
 
-<pre id="output"></pre>
+  <button onclick="toggleMusic()" id="musicBtn" style="position:fixed; top:20px; right:20px;">
+    🔇
+  </button>
+
+  <h1>HR Management System</h1>
+
+  <!-- ===== SEARCH ===== -->
+  <div class="search-box">
+    <input id="search" placeholder="Tìm kiếm..." oninput="handleSearch()">
+  </div>
+
+  <!-- ===== FORM ===== -->
+  <h3>Thêm / Sửa nhân sự</h3>
+  <div class="form-group">
+    <input id="id" placeholder="ID nhân sự (vd: HR001)">
+  </div>
+  <div class="form-group">
+    <input id="name" placeholder="Họ tên">
+    <input id="phone" placeholder="Số điện thoại">
+  </div>
+
+  <div class="form-group">
+    <input id="address" placeholder="Địa chỉ">
+    <input id="bank" placeholder="Số tài khoản">
+  </div>
+
+  <div class="form-group">
+    <input id="joinDate" type="date">
+    <input id="avatar" placeholder="Tên ảnh (vd: 1.jpg)">
+  </div>
+
+  <button onclick="addUser()">Thêm nhân sự</button>
+  <button onclick="updateUser()">Update</button>
+  <button onclick="resetSystem()">Resert</button>
+  <br><br>
+
+
+
+
+  <!-- ===== TABLE ===== -->
+  <div id="table"></div>
+</div>
 
 
 <script src="./src/user.js"></script>
-<script src="./src/task.js"></script>
-<script src="./src/kpi.js"></script>
+<script src="./src/data.js"></script>
 <script src="./src/system.js"></script>
 <script src="./src/main.js"></script>
 
+
+<div id="toast"></div>
 </body>
 </html>
