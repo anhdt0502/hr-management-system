@@ -23,13 +23,8 @@ class KPIService {
     return this.getNotAchieved().length;
   }
 
-  // // 👉 trạng thái từng user
-  // getStatus(user) {
-  //   if (user.kpi < this.target) return "low";
-  //   return "ok";
-  // }
 
-  // 👉 top performer
+  //  top performer
   getTop() {
     return [...this.users].sort((a, b) => b.kpi - a.kpi)[0];
   }
