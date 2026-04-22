@@ -1,7 +1,7 @@
 let system;
 let editingId = null;
 let currentPage = 1;
-const perPage = 5;
+const perPage = 7;
 
 function init() {
   system = new System();
@@ -78,6 +78,11 @@ function goPage(page) {
 function resetSystem() {
   localStorage.clear();
   location.reload();
+}
+function reloadSystem() {
+
+  location.reload();
+  render(system.getAll());
 }
 
 function addUser() {
