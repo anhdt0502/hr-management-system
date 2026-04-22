@@ -7,11 +7,33 @@ function init() {
   system = new System();
   system.load();
   render(system.getAll());
+
 }
 
 function render(users) {
   const start = (currentPage - 1) * perPage;
   const pageData = users.slice(start, start + perPage);
+  const kpiService = new KPIService(users);
+  const top = kpiService.getTop();
+  const top3 = kpiService.getTopN(Math.min(3, users.length));
+  const icons = ["🥇", "🥈", "🥉"];
+
+  document.getElementById("topUser").innerHTML = `
+  🏆 Top 1: ${top.name} - ${top.kpi.toLocaleString()}`;
+  document.getElementById("kpiSummary").innerHTML = `
+    🟢 Đạt KPI: ${kpiService.countAchieved()} |
+    🔴 Chưa đạt: ${kpiService.countNotAchieved()}  `;
+  let topHtml = "<h3>🏆 Top 3 Nhân sự</h3>";
+  top3.forEach((u, index) => {
+
+    topHtml += `
+    <p>
+      ${icons[index]} ${u.name} - ${u.kpi.toLocaleString()} VND
+    </p>
+  `;
+  });
+  document.getElementById("top3").innerHTML = topHtml;
+
   let html = `
     <table >
       <tr>
@@ -22,11 +44,13 @@ function render(users) {
         <th>Address</th>
         <th>Bank</th>
         <th>Join Work</th>
+        <th>KPI</th>
         <th>Action</th>
-      </tr>
-  `;
+
+      </tr>`;
 
   pageData.forEach(u => {
+    const isLow = u.kpi < 400000000;
     html += `
       <tr>
         <td>${u.id}</td>
@@ -36,6 +60,8 @@ function render(users) {
         <td>${u.address}</td>
         <td>${u.bank}</td>
         <td>${u.joinDate}</td>
+        <td style="color:${u.kpi < 400000000 ? 'red' : 'green'}">
+            ${u.kpi.toLocaleString()}</td>
         <td>
           <button onclick="editUser(${u.id})">Edit</button>
           <button onclick="deleteUser(${u.id})">Delete</button>
@@ -62,6 +88,7 @@ function render(users) {
 
   html += "</div>";
 
+
   document.getElementById("table").innerHTML = html;
 
 }
@@ -87,6 +114,8 @@ function reloadSystem() {
 
 function addUser() {
   const idInput = Number(document.getElementById("id").value);
+  const rawKpi = document.getElementById("kpi").value;
+  const kpi = Number(rawKpi.replace(/\./g, ""));
 
   const data = {
     id: idInput,
@@ -95,7 +124,8 @@ function addUser() {
     address: document.getElementById("address").value,
     bank: document.getElementById("bank").value,
     joinDate: document.getElementById("joinDate").value,
-    avatar: document.getElementById("avatar").value || "1.jpg"
+    avatar: document.getElementById("avatar").value || "1.jpg",
+    kpi: document.getElementById("kpi").value
   };
   // if ( !name || !phone || !address || !bank || !joinDate ) {
   //   showToast("⚠️ Vui lòng điền đầy đủ thông tin");
@@ -116,7 +146,8 @@ function addUser() {
       data.address,
       data.bank,
       data.joinDate,
-      data.avatar
+      data.avatar,
+      kpi.kpi,
     );
 
     system.add(user);
@@ -129,6 +160,7 @@ function addUser() {
 }
 function clearForm() {
   document.getElementById("id").value = "";
+  document.getElementById("kpi").value = "";
   document.getElementById("name").value = "";
   document.getElementById("phone").value = "";
   document.getElementById("avatar").value = "";
@@ -138,6 +170,8 @@ function clearForm() {
 }
 function updateUser() {
   const id = Number(document.getElementById("id").value);
+  const rawKpi = document.getElementById("kpi").value;
+  const kpi = Number(rawKpi.replace(/\./g, ""));
 
   const data = {
     name: document.getElementById("name").value,
@@ -145,7 +179,8 @@ function updateUser() {
     address: document.getElementById("address").value,
     bank: document.getElementById("bank").value,
     joinDate: document.getElementById("joinDate").value,
-    avatar: document.getElementById("avatar").value || "1.jpg"
+    avatar: document.getElementById("avatar").value || "1.jpg",
+    kpi: document.getElementById("kpi").value
   };
 
   system.updateUser(id, data);
@@ -193,8 +228,43 @@ function showToast(message, type = "success") {
     setTimeout(() => div.remove(), 400);
   }, 2000);
 }
-let isPlaying = localStorage.getItem("music") === "on";
+const kpiInput = document.getElementById("kpi");
 
+kpiInput.addEventListener("input", function () {
+  // bỏ dấu chấm cũ
+  let value = this.value.replace(/\./g, "");
+
+  // chỉ giữ số
+  value = value.replace(/\D/g, "");
+
+  // format lại
+  this.value = Number(value).toLocaleString("vi-VN");
+});
+clearForm();
+function showKpiModal() {
+  const kpiService = new KPIService(system.getAll());
+  const list = kpiService.getAchieved();
+
+  if (list.length === 0) {
+    showToast("❌ Không có ai đạt KPI");
+    return;
+  }
+
+  let html = "";
+
+  list.forEach(u => {
+    html += `<p>🟢 ${u.name} - ${u.kpi.toLocaleString()}</p>`;
+  });
+
+  document.getElementById("kpiList").innerHTML = html;
+  document.getElementById("kpiModal").style.display = "flex";
+}
+
+function closeKpiModal() {
+  document.getElementById("kpiModal").style.display = "none";
+}
+
+let isPlaying = localStorage.getItem("music") === "on";
 function toggleMusic() {
   const music = document.getElementById("bgMusic");
   const btn = document.getElementById("musicBtn");

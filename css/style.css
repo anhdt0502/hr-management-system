@@ -4,7 +4,7 @@ body {
 }
 
 .container {
-  width: 900px;
+  width: 1000px;
   margin: 50px auto;
   background: white;
   padding: 30px;
@@ -114,4 +114,25 @@ img {
   display: block;
   margin: 10px auto; /* 👉 căn giữa ngang */
   width: 120px;
+}
+#kpiModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 999;
+}
+
+#modalContent {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
 }

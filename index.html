@@ -19,7 +19,8 @@
   </button>
 
   <h1>HR Management System</h1>
-
+  <br><br>
+  <div id="topUser"></div>  <div id="top3"></div>
   <!-- ===== SEARCH ===== -->
   <div class="search-box">
     <input id="search" placeholder="Tìm kiếm..." oninput="handleSearch()">
@@ -29,6 +30,7 @@
   <h3>Thêm / Sửa nhân sự</h3>
   <div class="form-group">
     <input id="id" placeholder="ID nhân sự (vd: HR001)">
+    <input id="kpi" placeholder="KPI (VND)">
   </div>
   <div class="form-group">
     <input id="name" placeholder="Họ tên">
@@ -45,6 +47,11 @@
     <input id="avatar" placeholder="Tên ảnh (vd: 1.jpg)">
   </div>
 
+  <br>
+  <div id="kpiSummary" style="margin:10px 0; font-weight:bold;"></div>
+
+  <button onclick="showKpiModal()">Xem nhân viên đạt KPI</button><br><br>
+  <br><br>
   <button onclick="addUser()">Thêm nhân sự</button>
   <button onclick="updateUser()">Update</button>
   <button onclick="reloadSystem()">Reload</button>
@@ -62,9 +69,18 @@
 <script src="./src/user.js"></script>
 <script src="./src/data.js"></script>
 <script src="./src/system.js"></script>
+<script src="./src/kpi.js"></script>
 <script src="./src/main.js"></script>
 
 
 <div id="toast"></div>
+<div id="kpiModal" style="display:none;">
+  <div id="modalContent">
+    <h3>Nhân viên đạt KPI</h3>
+    <div id="kpiList"></div>
+    <button onclick="closeKpiModal()">Đóng</button>
+  </div>
+
+</div>
 </body>
 </html>

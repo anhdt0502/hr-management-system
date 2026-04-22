@@ -19,7 +19,8 @@ class System {
       u.address,
       u.bank,
       u.joinDate,
-      u.avatar
+      u.avatar,
+      Number(String(u.kpi).replace(/\./g, "")) || 0
     ));
   }
 
@@ -42,6 +43,7 @@ class System {
     u.bank = data.bank;
     u.joinDate = data.joinDate;
     u.avatar = data.avatar;
+    u.kpi = data.kpi;
     this.save();
   }
 
