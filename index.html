@@ -20,7 +20,13 @@
 
   <h1>HR Management System</h1>
   <br><br>
-  <div id="topUser"></div>  <div id="top3"></div>
+  <button onclick="logout()" id="logoutBtn">Logout</button>
+  <div class="row-box">
+    <div id="dashboard" class="box"></div>
+    <div id="top3" class="box"></div>
+    <div id="topUser" class="box"></div>
+
+  </div>
 
   <!-- ===== FORM ===== -->
   <h3>Thêm / Sửa nhân sự</h3>
@@ -52,6 +58,7 @@
     <input id="search" placeholder="Tìm kiếm..." oninput="handleSearch()">
   </div>
   <br>
+
   <button onclick="addUser()">Thêm nhân sự</button>
   <button onclick="updateUser()">Update</button>
   <button onclick="reloadSystem()">Reload</button>
@@ -65,7 +72,7 @@
   <div id="table"></div>
 </div>
 
-
+<script src="./src/auth.js"></script>
 <script src="./src/user.js"></script>
 <script src="./src/data.js"></script>
 <script src="./src/system.js"></script>

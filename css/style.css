@@ -136,3 +136,29 @@ img {
   border-radius: 8px;
   width: 300px;
 }
+.row-box {
+  display: flex;
+  gap: 20px; /* khoảng cách giữa các box */
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.box {
+  flex: 1; /* 3 box chia đều */
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+#topUser {
+  text-align: center;
+}
+
+#topUser img {
+  margin: 20px 0;
+  border: 3px solid gold;
+}
+#logoutBtn {
+  position: fixed;
+  top: 15px;
+  right: 50px;
+}

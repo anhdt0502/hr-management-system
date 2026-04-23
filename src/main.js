@@ -10,19 +10,39 @@ function init() {
 
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const auth = new AuthService();
+
+  if (!auth.isLogin()) {
+    window.location.href = "login.html";
+  }
+  init();
+});
+
 function render(users) {
   const start = (currentPage - 1) * perPage;
   const pageData = users.slice(start, start + perPage);
   const kpiService = new KPIService(users);
   const top = kpiService.getTop();
+  const total = users.reduce((sum, u) => sum + u.kpi, 0);
+  const avg = users.length ? total / users.length : 0;
   const top3 = kpiService.getTopN(Math.min(3, users.length));
   const icons = ["🥇", "🥈", "🥉"];
 
   document.getElementById("topUser").innerHTML = `
-  🏆 Top 1: ${top.name} - ${top.kpi.toLocaleString()}`;
+
+  🏆 Top 1: ${top.name} - ${top.kpi.toLocaleString()}
+  <img src="./img/${top.avatar}" width="360 " style="border-radius:50%">`;
+
   document.getElementById("kpiSummary").innerHTML = `
     🟢 Đạt KPI: ${kpiService.countAchieved()} |
     🔴 Chưa đạt: ${kpiService.countNotAchieved()}  `;
+
+  document.getElementById("dashboard").innerHTML = `
+  👥 Nhân sự: ${users.length} <br><br>
+  💰 Tổng KPI: ${total.toLocaleString()} <br><br>
+  📊 Trung bình: ${Math.round(avg).toLocaleString()} `;
+
   let topHtml = "<h3>🏆 Top 3 Nhân sự</h3>";
   top3.forEach((u, index) => {
 
@@ -92,6 +112,7 @@ function render(users) {
   document.getElementById("table").innerHTML = html;
 
 }
+
 function goPage(page) {
   currentPage = page;
   const keyword = document.getElementById("search").value;
@@ -102,10 +123,12 @@ function goPage(page) {
     render(system.getAll());
   }
 }
+
 function resetSystem() {
   localStorage.clear();
   location.reload();
 }
+
 function reloadSystem() {
 
   location.reload();
@@ -158,6 +181,7 @@ function addUser() {
   clearForm();
 
 }
+
 function clearForm() {
   document.getElementById("id").value = "";
   document.getElementById("kpi").value = "";
@@ -168,6 +192,7 @@ function clearForm() {
   document.getElementById("bank").value = "";
   document.getElementById("joinDate").value = "";
 }
+
 function updateUser() {
   const id = Number(document.getElementById("id").value);
   const rawKpi = document.getElementById("kpi").value;
@@ -188,6 +213,7 @@ function updateUser() {
   render(system.getAll());
   clearForm();
 }
+
 function editUser(id) {
   const u = system.getById(id);
 
@@ -199,6 +225,7 @@ function editUser(id) {
   document.getElementById("joinDate").value = u.joinDate;
   document.getElementById("avatar").value = u.avatar;
 }
+
 function deleteUser(id) {
   const confirmDelete = confirm("Bạn có chắc muốn xóa?");
 
@@ -207,12 +234,12 @@ function deleteUser(id) {
   system.delete(id);
   render(system.getAll());
 }
+
 function handleSearch() {
   const keyword = document.getElementById("search").value;
   currentPage = 1;
   render(system.search(keyword));
 }
-
 
 
 function showToast(message, type = "success") {
@@ -228,6 +255,7 @@ function showToast(message, type = "success") {
     setTimeout(() => div.remove(), 400);
   }, 2000);
 }
+
 const kpiInput = document.getElementById("kpi");
 
 kpiInput.addEventListener("input", function () {
@@ -241,6 +269,7 @@ kpiInput.addEventListener("input", function () {
   this.value = Number(value).toLocaleString("vi-VN");
 });
 clearForm();
+
 function showKpiModal() {
   const kpiService = new KPIService(system.getAll());
   const list = kpiService.getAchieved();
@@ -260,11 +289,13 @@ function showKpiModal() {
   document.getElementById("kpiModal").style.display = "flex";
 }
 
+
 function closeKpiModal() {
   document.getElementById("kpiModal").style.display = "none";
 }
 
 let isPlaying = localStorage.getItem("music") === "on";
+
 function toggleMusic() {
   const music = document.getElementById("bgMusic");
   const btn = document.getElementById("musicBtn");
@@ -281,11 +312,16 @@ function toggleMusic() {
 
   isPlaying = !isPlaying;
 }
+function logout() {
+  const auth = new AuthService();
+  auth.logout();
+  window.location.href = "login.html";
+}
 init();
 window.onload = () => {
   document.body.addEventListener("click", () => {
     const music = document.getElementById("bgMusic");
     music.play();
-  }, { once: true });
+  }, {once: true});
 };
 
