@@ -1,14 +1,3 @@
-let system;
-let editingId = null;
-let currentPage = 1;
-const perPage = 7;
-
-function init() {
-  system = new System();
-  system.load();
-  render(system.getAll());
-
-}
 
 document.addEventListener("DOMContentLoaded", () => {
   const auth = new AuthService();
@@ -18,6 +7,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   init();
 });
+function init() {
+  system = new System();
+  system.load();
+  render(system.getAll());
+
+}
+let system;
+let editingId = null;
+let currentPage = 1;
+const perPage = 7;
 
 function render(users) {
   const start = (currentPage - 1) * perPage;
@@ -205,7 +204,7 @@ function updateUser() {
     bank: document.getElementById("bank").value,
     joinDate: document.getElementById("joinDate").value,
     avatar: document.getElementById("avatar").value || "1.jpg",
-    kpi: document.getElementById("kpi").value
+    kpi: kpi
   };
 
   system.updateUser(id, data);
